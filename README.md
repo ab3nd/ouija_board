@@ -4,8 +4,11 @@ Hardware and software plans for a ouija board that is controlled by a computer a
 ### Measurements of Ouija board
 
 Letters - 30mm tall by 14mm (I) - 38mm (W)
+
 "NO" - 20mm tall by 35mm wide
+
 "YES" - 20mm tall by 45mm wide
+
 "GOOD BYE" - 20mm by 170mm wide
 
 Closest approach to board edge - 25mm (bottom of "GOOD BYE")
