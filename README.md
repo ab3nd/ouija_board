@@ -15,9 +15,11 @@ Closest approach to board edge - 25mm (bottom of "GOOD BYE")
 
 Board thickness - 3.5mm
 
-So the maximum diameter of the sense ring is 25mm + 20mm/2 = 35mm, to be able to have the center of the actuated planchette window over the centerline of the letters closest to the edge of the board. 
+So the maximum radius of the sense ring is 25mm + 20mm/2 = 35mm, to be able to have the center of the actuated planchette window over the centerline of the letters closest to the edge of the board. 
 
-The minimum diameter of the sense ring would be set by the size of the letters, and appears to be around 30-35mm, so the sense ring should be a PCB with a diameter no larger than 35mm and not much smaller than 35mm either. 
+The minimum diameter of the sense ring would be set by the size of the letters, and appears to be around 30-35mm, so a radius of 15-17mm. 
+
+So the radius should be at minimum 15-17mm, and at maxium 35mm, bigger is easier to build (more PCB space), but 17mm can probably fit a ring. 
 
 ### Hardware Notes
 
