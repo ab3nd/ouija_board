@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 0)
+    (drawings 1)
     (tracks 159)
     (zones 0)
     (modules 18)
@@ -1029,6 +1029,8 @@
       (xy -2.538182 -17.14601) (xy -2.389188 -17.167246) (xy -1.654029 -17.252903) (xy -0.91575 -17.307156)
       (xy -0.175598 -17.33005) (xy 0.565177 -17.32163)) (layer Eco1.User) (width 0.01))
   )
+
+  (gr_circle (center 232.41 81.28) (end 248.793 88.265) (layer Edge.Cuts) (width 0.2))
 
   (segment (start 233.36 95.563) (end 242.062 89.535) (width 0.45) (layer F.Cu) (net 1))
   (segment (start 242.062 89.535) (end 243.153827 90.680324) (width 0.45) (layer F.Cu) (net 1))
