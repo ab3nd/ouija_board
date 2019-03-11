@@ -1,38 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:switches
-LIBS:relays
-LIBS:motors
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
+EESchema Schematic File Version 4
 LIBS:sense_pcb-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -47,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L 4051 U5
+L sense_pcb-rescue:4051 U5
 U 1 1 5C79D3AB
 P 1675 2900
 F 0 "U5" H 1775 2900 50  0000 C CNN
@@ -58,7 +26,7 @@ F 3 "" H 1675 2900 60  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L DRV5053VAQDBZR U1
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U1
 U 1 1 5C79D70C
 P 1300 4475
 F 0 "U1" H 1200 4775 60  0000 C CNN
@@ -78,7 +46,7 @@ F 12 "Active" H 1500 5675 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L DRV5053VAQDBZR U2
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U2
 U 1 1 5C79DA4D
 P 1300 5150
 F 0 "U2" H 1200 5450 60  0000 C CNN
@@ -98,7 +66,7 @@ F 12 "Active" H 1500 6350 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L DRV5053VAQDBZR U3
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U3
 U 1 1 5C79DB6B
 P 1300 5850
 F 0 "U3" H 1200 6150 60  0000 C CNN
@@ -118,7 +86,7 @@ F 12 "Active" H 1500 7050 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L DRV5053VAQDBZR U4
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U4
 U 1 1 5C79DC91
 P 1300 6550
 F 0 "U4" H 1200 6850 60  0000 C CNN
@@ -138,7 +106,7 @@ F 12 "Active" H 1500 7750 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L C C1
+L sense_pcb-rescue:C C1
 U 1 1 5C79F1DF
 P 2575 2625
 F 0 "C1" H 2600 2725 50  0000 L CNN
@@ -149,7 +117,7 @@ F 3 "" H 2575 2625 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L DRV5053VAQDBZR U6
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U6
 U 1 1 5C79F8D1
 P 2325 4475
 F 0 "U6" H 2225 4775 60  0000 C CNN
@@ -169,7 +137,7 @@ F 12 "Active" H 2525 5675 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L DRV5053VAQDBZR U7
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U7
 U 1 1 5C79F8E0
 P 2325 5150
 F 0 "U7" H 2225 5450 60  0000 C CNN
@@ -189,7 +157,7 @@ F 12 "Active" H 2525 6350 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L DRV5053VAQDBZR U8
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U8
 U 1 1 5C79F8EF
 P 2325 5850
 F 0 "U8" H 2225 6150 60  0000 C CNN
@@ -209,7 +177,7 @@ F 12 "Active" H 2525 7050 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L DRV5053VAQDBZR U9
+L dk_Magnetic-Sensors-Linear-Compass-ICs:DRV5053VAQDBZR U9
 U 1 1 5C79F8FE
 P 2325 6550
 F 0 "U9" H 2225 6850 60  0000 C CNN
@@ -229,25 +197,25 @@ F 12 "Active" H 2525 7750 60  0001 L CNN "Status"
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	1000 4375 1000 6625
+	1000 4375 1000 5050
 Connection ~ 1000 5050
 Connection ~ 1000 5750
 Wire Wire Line
 	1000 6625 2025 6625
 Wire Wire Line
-	2025 6625 2025 3875
+	2025 6625 2025 6450
 Connection ~ 1000 6450
 Connection ~ 2025 6450
 Connection ~ 2025 5750
 Connection ~ 2025 5050
 Wire Wire Line
-	2625 2775 2625 6725
+	2625 2775 2625 4375
 Connection ~ 2625 5050
 Connection ~ 2625 5750
 Wire Wire Line
-	1600 4375 1600 6725
+	1600 4375 1600 5050
 Wire Wire Line
-	1600 6725 2625 6725
+	1600 6725 1825 6725
 Connection ~ 2625 6450
 Connection ~ 1600 6450
 Connection ~ 1600 5750
@@ -322,12 +290,12 @@ Connection ~ 2625 4375
 Wire Wire Line
 	2575 2475 2575 2200
 Wire Wire Line
-	2575 2200 2175 2200
+	2575 2200 2400 2200
 $Comp
-L GND #PWR5
+L power:GND #PWR05
 U 1 1 5C79FE8A
 P 1825 6900
-F 0 "#PWR5" H 1825 6650 50  0001 C CNN
+F 0 "#PWR05" H 1825 6650 50  0001 C CNN
 F 1 "GND" H 1825 6750 50  0000 C CNN
 F 2 "" H 1825 6900 50  0001 C CNN
 F 3 "" H 1825 6900 50  0001 C CNN
@@ -335,10 +303,10 @@ F 3 "" H 1825 6900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR6
+L power:VCC #PWR06
 U 1 1 5C79FEB2
 P 2400 2100
-F 0 "#PWR6" H 2400 1950 50  0001 C CNN
+F 0 "#PWR06" H 2400 1950 50  0001 C CNN
 F 1 "VCC" H 2400 2250 50  0000 C CNN
 F 2 "" H 2400 2100 50  0001 C CNN
 F 3 "" H 2400 2100 50  0001 C CNN
@@ -346,7 +314,7 @@ F 3 "" H 2400 2100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2400 2100 2400 3875
+	2400 2100 2400 2200
 Connection ~ 2400 2200
 Wire Wire Line
 	1825 6900 1825 6725
@@ -365,10 +333,10 @@ Wire Wire Line
 	2400 3875 2025 3875
 Connection ~ 2025 4375
 $Comp
-L VCC #PWR1
+L power:VCC #PWR01
 U 1 1 5C7A43BC
 P 975 825
-F 0 "#PWR1" H 975 675 50  0001 C CNN
+F 0 "#PWR01" H 975 675 50  0001 C CNN
 F 1 "VCC" H 975 975 50  0000 C CNN
 F 2 "" H 975 825 50  0001 C CNN
 F 3 "" H 975 825 50  0001 C CNN
@@ -376,10 +344,10 @@ F 3 "" H 975 825 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR2
+L power:GND #PWR02
 U 1 1 5C7A440E
 P 975 1250
-F 0 "#PWR2" H 975 1000 50  0001 C CNN
+F 0 "#PWR02" H 975 1000 50  0001 C CNN
 F 1 "GND" H 975 1100 50  0000 C CNN
 F 2 "" H 975 1250 50  0001 C CNN
 F 3 "" H 975 1250 50  0001 C CNN
@@ -387,10 +355,10 @@ F 3 "" H 975 1250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VDD #PWR3
+L power:VDD #PWR03
 U 1 1 5C7A4460
 P 1150 825
-F 0 "#PWR3" H 1150 675 50  0001 C CNN
+F 0 "#PWR03" H 1150 675 50  0001 C CNN
 F 1 "VDD" H 1150 975 50  0000 C CNN
 F 2 "" H 1150 825 50  0001 C CNN
 F 3 "" H 1150 825 50  0001 C CNN
@@ -398,10 +366,10 @@ F 3 "" H 1150 825 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VSS #PWR4
+L power:VSS #PWR04
 U 1 1 5C7A44B2
 P 1150 1250
-F 0 "#PWR4" H 1150 1100 50  0001 C CNN
+F 0 "#PWR04" H 1150 1100 50  0001 C CNN
 F 1 "VSS" H 1150 1400 50  0000 C CNN
 F 2 "" H 1150 1250 50  0001 C CNN
 F 3 "" H 1150 1250 50  0001 C CNN
@@ -409,82 +377,82 @@ F 3 "" H 1150 1250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	975  1250 1450 1250
+	975  1250 1150 1250
 Wire Wire Line
-	975  825  1425 825 
+	975  825  1150 825 
 $Comp
-L TEST_1P J11
+L sense_pcb-rescue:TEST_1P J2
 U 1 1 5C7A62DE
 P 1425 750
-F 0 "J11" H 1425 1020 50  0000 C CNN
+F 0 "J2" H 1425 1020 50  0000 C CNN
 F 1 "TEST_1P" H 1425 950 50  0000 C CNN
-F 2 "" H 1625 750 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 1625 750 50  0001 C CNN
 F 3 "" H 1625 750 50  0001 C CNN
 	1    1425 750 
 	1    0    0    -1  
 $EndComp
 $Comp
-L TEST_1P J2
+L sense_pcb-rescue:TEST_1P J7
 U 1 1 5C7A634B
 P 3600 3450
-F 0 "J2" H 3600 3720 50  0000 C CNN
+F 0 "J7" H 3600 3720 50  0000 C CNN
 F 1 "TEST_1P" H 3600 3650 50  0000 C CNN
-F 2 "" H 3800 3450 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 3800 3450 50  0001 C CNN
 F 3 "" H 3800 3450 50  0001 C CNN
 	1    3600 3450
 	1    0    0    -1  
 $EndComp
 $Comp
-L TEST_1P J4
+L sense_pcb-rescue:TEST_1P J6
 U 1 1 5C7A64AA
 P 3450 3400
-F 0 "J4" H 3450 3670 50  0000 C CNN
+F 0 "J6" H 3450 3670 50  0000 C CNN
 F 1 "TEST_1P" H 3450 3600 50  0000 C CNN
-F 2 "" H 3650 3400 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 3650 3400 50  0001 C CNN
 F 3 "" H 3650 3400 50  0001 C CNN
 	1    3450 3400
 	1    0    0    -1  
 $EndComp
 $Comp
-L TEST_1P J5
+L sense_pcb-rescue:TEST_1P J5
 U 1 1 5C7A6507
 P 3300 3350
 F 0 "J5" H 3300 3620 50  0000 C CNN
 F 1 "TEST_1P" H 3300 3550 50  0000 C CNN
-F 2 "" H 3500 3350 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 3500 3350 50  0001 C CNN
 F 3 "" H 3500 3350 50  0001 C CNN
 	1    3300 3350
 	1    0    0    -1  
 $EndComp
 $Comp
-L TEST_1P J3
+L sense_pcb-rescue:TEST_1P J1
 U 1 1 5C7A6642
 P 1100 1700
-F 0 "J3" H 1100 1970 50  0000 C CNN
+F 0 "J1" H 1100 1970 50  0000 C CNN
 F 1 "TEST_1P" H 1100 1900 50  0000 C CNN
-F 2 "" H 1300 1700 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 1300 1700 50  0001 C CNN
 F 3 "" H 1300 1700 50  0001 C CNN
 	1    1100 1700
 	1    0    0    -1  
 $EndComp
 $Comp
-L TEST_1P J6
+L sense_pcb-rescue:TEST_1P J4
 U 1 1 5C7A66CF
 P 3175 3300
-F 0 "J6" H 3175 3570 50  0000 C CNN
+F 0 "J4" H 3175 3570 50  0000 C CNN
 F 1 "TEST_1P" H 3175 3500 50  0000 C CNN
-F 2 "" H 3375 3300 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 3375 3300 50  0001 C CNN
 F 3 "" H 3375 3300 50  0001 C CNN
 	1    3175 3300
 	1    0    0    -1  
 $EndComp
 $Comp
-L TEST_1P J?
+L sense_pcb-rescue:TEST_1P J3
 U 1 1 5C875137
 P 1450 1000
-F 0 "J?" H 1450 1270 50  0000 C CNN
+F 0 "J3" H 1450 1270 50  0000 C CNN
 F 1 "TEST_1P" H 1450 1200 50  0000 C CNN
-F 2 "" H 1650 1000 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 1650 1000 50  0001 C CNN
 F 3 "" H 1650 1000 50  0001 C CNN
 	1    1450 1000
 	1    0    0    -1  
@@ -513,4 +481,42 @@ Wire Wire Line
 	1975 3700 3600 3700
 Wire Wire Line
 	3600 3700 3600 3450
+Wire Wire Line
+	1000 5050 1000 5750
+Wire Wire Line
+	1000 5750 1000 6450
+Wire Wire Line
+	1000 6450 1000 6625
+Wire Wire Line
+	2025 6450 2025 5750
+Wire Wire Line
+	2025 5750 2025 5050
+Wire Wire Line
+	2025 5050 2025 4375
+Wire Wire Line
+	2625 5050 2625 5750
+Wire Wire Line
+	2625 5750 2625 6450
+Wire Wire Line
+	2625 6450 2625 6725
+Wire Wire Line
+	1600 6450 1600 6725
+Wire Wire Line
+	1600 5750 1600 6450
+Wire Wire Line
+	1600 5050 1600 5750
+Wire Wire Line
+	2625 4375 2625 5050
+Wire Wire Line
+	2400 2200 2175 2200
+Wire Wire Line
+	2400 2200 2400 3875
+Wire Wire Line
+	1825 6725 2625 6725
+Wire Wire Line
+	2025 4375 2025 3875
+Wire Wire Line
+	1150 1250 1450 1250
+Wire Wire Line
+	1150 825  1425 825 
 $EndSCHEMATC
