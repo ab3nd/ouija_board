@@ -59,3 +59,7 @@ AH49ENTR Hall effect sensors, SOT23-3 case
 74hc4051 8ch analog demux
 
 3 enable, 3 address = 24 hall effect sensors
+
+### Magnet Grip
+
+Plan is to replace planchette window/pointer with a cut piece of acrylic with a neodymium magnet in it, 5mm is about the max diameter for the magnet to still have it look good. 
