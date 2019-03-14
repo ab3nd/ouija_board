@@ -29,6 +29,18 @@ Height (top of YES/NO to bottom of GOODBYE) - 230mm
 
 Board 295mm x 445mm (Conveniently, just inside the cutting area of my laser cutter)
 
+
+These measurements are from my Ouija board, which is the older model. 
+
+Width (outside of N to outside of Z) - 375mm
+Height (top of YES/NO to bottom of GOODBYE) - 235mm
+
+Board 295mm by 446mm
+
+So the board size is essentially exactly the same, but the printing is a little different. The same size of plotter can work with either board, and the differences in text location can be handled by calibration. 
+
+
+
 A4 paper size is 210 mm × 297 mm (8.27 in × 11.7 in), so the plotters with an A4-sized area are a little too small for a traditional Ouija board. 
 A3 paper is 297 mm × 420 mm (11.69 in × 16.54 in), so an A3 plotter would work. 
 
@@ -37,7 +49,6 @@ https://www.aliexpress.com/item/DIY-XY-Plotter-drawbot-pen-drawing-robot-machine
 https://www.aliexpress.com/item/50-X-65cm-Laser-Engraving-Machine-Wood-Router-CNC-DIY-Laser-Engraver-Machine-For-Desktop-Cutting/32970303676.html?spm=2114.search0204.3.96.5e8f46b0ur8a8C&ws_ab_test=searchweb0_0,searchweb201602_6_10065_10130_10068_10890_10547_319_10546_317_10548_10545_10696_453_10084_454_10083_10618_10307_537_536_10902_10059_10884_10887_321_322_10103,searchweb201603_16,ppcSwitch_0&algo_expid=b95455ae-6d0d-4979-8a5e-edf8464dbc0f-14&algo_pvid=b95455ae-6d0d-4979-8a5e-edf8464dbc0f
 
 Second one is huge, could be cut down to fit under board. Very tall, though. 
-
 
 
 
