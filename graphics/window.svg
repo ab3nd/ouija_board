@@ -54,19 +54,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <ellipse
+    <path
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.69999999"
-       id="path4136"
-       cx="314.32004"
-       cy="568.75647"
-       rx="67.128647"
-       ry="67.128654" />
-    <ellipse
+       d="m 381.44868,568.75647 a 67.128647,67.128654 0 0 1 -67.12864,67.12865 67.128647,67.128654 0 0 1 -67.12865,-67.12865 67.128647,67.128654 0 0 1 67.12865,-67.12865 67.128647,67.128654 0 0 1 67.12864,67.12865 z"
+       id="path4136" />
+    <path
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.69999999"
-       id="path4136-3"
-       cx="314.32004"
-       cy="568.75647"
-       rx="6.7050586"
-       ry="6.7050591" />
+       d="m 321.0251,568.75647 a 6.7050586,6.7050591 0 0 1 -6.70506,6.70506 6.7050586,6.7050591 0 0 1 -6.70506,-6.70506 6.7050586,6.7050591 0 0 1 6.70506,-6.70506 6.7050586,6.7050591 0 0 1 6.70506,6.70506 z"
+       id="path4136-3" />
   </g>
 </svg>
