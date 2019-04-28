@@ -1,8 +1,11 @@
-(kicad_pcb (version 20171130) (host pcbnew 5.0.2-bee76a0~70~ubuntu18.04.1)
+(kicad_pcb (version 4) (host pcbnew 4.0.7-e2-6376~58~ubuntu16.04.1)
 
   (general
+    (links 34)
+    (no_connects 0)
+    (area 210.093523 59.031523 254.692477 103.528476)
     (thickness 1.6)
-    (drawings 1)
+    (drawings 2)
     (tracks 159)
     (zones 0)
     (modules 18)
@@ -34,7 +37,7 @@
   )
 
   (setup
-    (last_trace_width 0.45)
+    (last_trace_width 0.25)
     (user_trace_width 0.45)
     (user_trace_width 0.5)
     (trace_clearance 0.2)
@@ -66,9 +69,6 @@
     (pcbplotparams
       (layerselection 0x00030_80000001)
       (usegerberextensions false)
-      (usegerberattributes false)
-      (usegerberadvancedattributes false)
-      (creategerberjobfile false)
       (excludeedgelayer true)
       (linewidth 0.100000)
       (plotframeref false)
@@ -77,7 +77,8 @@
       (useauxorigin false)
       (hpglpennumber 1)
       (hpglpenspeed 20)
-      (hpglpendiameter 15.000000)
+      (hpglpendiameter 15)
+      (hpglpenoverlay 2)
       (psnegative false)
       (psa4output false)
       (plotreference true)
@@ -669,10 +670,10 @@
   (module graphics:layout.35mm (layer F.Cu) (tedit 0) (tstamp 5C85E92B)
     (at 232.41 81.28)
     (fp_text reference G*** (at 0 0) (layer F.SilkS) hide
-      (effects (font (size 1.524 1.524) (thickness 0.3)))
+      (effects (font (thickness 0.3)))
     )
     (fp_text value LOGO (at 0.75 0) (layer F.SilkS) hide
-      (effects (font (size 1.524 1.524) (thickness 0.3)))
+      (effects (font (thickness 0.3)))
     )
     (fp_poly (pts (xy 0.170867 -1.017051) (xy 0.328859 -0.977285) (xy 0.477313 -0.913687) (xy 0.613603 -0.828223)
       (xy 0.735104 -0.722861) (xy 0.83919 -0.599568) (xy 0.923235 -0.460311) (xy 0.984614 -0.307057)
@@ -1030,6 +1031,7 @@
       (xy -0.175598 -17.33005) (xy 0.565177 -17.32163)) (layer Eco1.User) (width 0.01))
   )
 
+  (gr_circle (center 232.41508 81.28) (end 236.01172 82.45348) (layer Edge.Cuts) (width 0.15))
   (gr_circle (center 232.41 81.28) (end 248.793 88.265) (layer Edge.Cuts) (width 0.2))
 
   (segment (start 233.36 95.563) (end 242.062 89.535) (width 0.45) (layer F.Cu) (net 1))
