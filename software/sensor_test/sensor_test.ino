@@ -97,12 +97,17 @@ void loop() {
 //  Serial.print(sumX);
 //  Serial.print(",");
 //  Serial.println(sumY);
-  
-  //Convert to polar
-  float r = sqrt(pow(sumX, 2) + pow(sumY, 2));
-  float theta = atan2(sumY, sumX);
-  //Serial.print(r);
-  //Serial.print(",");
-  Serial.println(theta);
+
+  //Might not need polar conversion, since the system is in X and Y
+  Serial.print(sumX);
+  Serial.print(",");
+  Serial.println(sumY);
+
+//  //Convert to polar
+//  float r = sqrt(pow(sumX, 2) + pow(sumY, 2));
+//  float theta = atan2(sumY, sumX);
+//  //Serial.print(r);
+//  //Serial.print(",");
+//  Serial.println(theta);
   
 }
