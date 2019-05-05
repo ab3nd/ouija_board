@@ -62,37 +62,6 @@ module servo_horn(){
    }
 }
 
-module magnet_holder(){
-   difference(){
-      cylinder(r=4, h=10, $fn=200);
-      translate([0,0,-3]){
-         cylinder(r=2.5, h=10, $fn=200);
-      }
-   }
-
-   difference(){
-      union(){
-         translate([-2.5, 0, 14]){
-            translate([1.5, 0, 0]){
-               rotate([0,90,0]){
-                  cylinder(r=2.5, h=2, $fn=200);
-               }
-            }
-         }
-
-         translate([0,0,12]){
-               cube([2,5,4], center=true);
-         }
-      }
-
-      translate([-2.5, 0, 14]){
-         rotate([0,90,0]){
-            cylinder(r=0.5, h=5, $fn=200);
-         }
-      }
-   }
-}
-
 module pcb(){
    color([0,0.5,0]){
       cylinder(r=17.809911, h=1, $fn=200);
@@ -143,21 +112,6 @@ module mount_surface(){
    }
 }
 
-
-//Put the servo in
-//rotate([90,0,0]){
-//   servo_with_horn();
-//}
-
-//Initial position for magnet holder
-//translate([0, -(22.2+4.14+2.9+2.53), 45]){
-//   rotate([0,180,90]){
-//      magnet_holder();
-//   }
-//}
-
-//magnet_holder();
-
 module guide_tube(){
    //guide tube for magnet holder
    difference(){
@@ -174,7 +128,7 @@ module guide_tube(){
 
       //cut the hole out of the middle for the tube
       translate([0, 0, 29.5]){
-               cylinder(r=4.1, h=21, $fn=200);
+               cylinder(r=4.2, h=21, $fn=200);
       }
    }
 }
@@ -182,7 +136,7 @@ module guide_tube(){
 difference()
 {
    union(){
-      translate([0,7,0]){
+      translate([0,7,10]){
          guide_tube();
       }
 
@@ -193,11 +147,11 @@ difference()
       }
 
       //Mount for the pcb
-       translate([0, 7, 50]){
+       translate([0, 7, 60]){
          difference(){
             cylinder(r=17.809911, h=2, $fn=200);
             translate([0,0,-0.5]){
-               cylinder(r=4.1, h=3, $fn=200);
+               cylinder(r=4.2, h=3, $fn=200);
             }
          }
       }
@@ -219,7 +173,7 @@ difference()
 
       //cubes to stick everything together
       translate([-13,0,-1.5]){
-         cube([25,2,52]);
+         cube([26,2,62]);
       }
 
       translate([30,0,-30]){
@@ -228,8 +182,14 @@ difference()
    }
 
    //Cube on the back to cut off part of the disk
-   translate([-20,-15,45]){
+   translate([-20,-15,55]){
       cube([40,15,10]);
    }
 
+   //hole for servo screw
+   translate([6,2.5,6]){
+      rotate([90,0,0]){
+         cylinder(r=5, h=5, $fn=80);
+      }
+   }
 }
