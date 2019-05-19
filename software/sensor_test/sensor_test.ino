@@ -157,56 +157,56 @@ void loop() {
   sumX > 0 ? digitalWrite(DIR_X, HIGH): digitalWrite(DIR_X, LOW);
   sumY > 0 ? digitalWrite(DIR_Y, HIGH): digitalWrite(DIR_Y, LOW);
   
-//  //Do some steps
-//  if(sumX > 10 || sumY > 10){
-//    // The change is big enough that we should react to it
-//    int ratio = 0;
-//    if(sumX > sumY){
-//      // Do one step in the Y direction and the ratio steps in X
-//      ratio = int(abs(sumX/sumY));
-//      Serial.print("X larger: ");
-//      Serial.println(ratio);
-//
-//      // Y step
-//      if(digitalRead(LIMIT_Y) == 0){
-//        digitalWrite(STEP_Y,HIGH); 
-//        delayMicroseconds(500); 
-//        digitalWrite(STEP_Y,LOW); 
-//        delayMicroseconds(500); 
-//      }
-//
-//      // X steps
-//      while(ratio > 0 && (digitalRead(LIMIT_X) == 0)){
-//        ratio--;
-//        digitalWrite(STEP_X,HIGH); 
-//        delayMicroseconds(500); 
-//        digitalWrite(STEP_X,LOW); 
-//        delayMicroseconds(500);                 
-//      }
-//    }
-//    else{
-//      // Do one step in the X direction and the ratio steps in Y
-//      ratio = int(abs(sumY/sumX));
-//      Serial.print("Y larger: ");
-//      Serial.println(ratio);
-//      
-//      // Single X step
-//      if(digitalRead(LIMIT_X) == 0){
-//        digitalWrite(STEP_X,HIGH); 
-//        delayMicroseconds(500); 
-//        digitalWrite(STEP_X,LOW); 
-//        delayMicroseconds(500); 
-//      }
-//      // Y step for ratio
-//      while(ratio > 0 && (digitalRead(LIMIT_Y) == 0)){
-//        ratio--;
-//        digitalWrite(STEP_Y,HIGH); 
-//        delayMicroseconds(500); 
-//        digitalWrite(STEP_Y,LOW); 
-//        delayMicroseconds(500);                 
-//      }
-//    }
-//  }
+  //Do some steps
+  if(sumX > 10 || sumY > 10){
+    // The change is big enough that we should react to it
+    int ratio = 0;
+    if(sumX > sumY){
+      // Do one step in the Y direction and the ratio steps in X
+      ratio = int(abs(sumX/sumY));
+      Serial.print("X larger: ");
+      Serial.println(ratio);
+
+      // Y step
+      if(digitalRead(LIMIT_Y) == 0){
+        digitalWrite(STEP_Y,HIGH); 
+        delayMicroseconds(500); 
+        digitalWrite(STEP_Y,LOW); 
+        delayMicroseconds(500); 
+      }
+
+      // X steps
+      while(ratio > 0 && (digitalRead(LIMIT_X) == 0)){
+        ratio--;
+        digitalWrite(STEP_X,HIGH); 
+        delayMicroseconds(500); 
+        digitalWrite(STEP_X,LOW); 
+        delayMicroseconds(500);                 
+      }
+    }
+    else{
+      // Do one step in the X direction and the ratio steps in Y
+      ratio = int(abs(sumY/sumX));
+      Serial.print("Y larger: ");
+      Serial.println(ratio);
+      
+      // Single X step
+      if(digitalRead(LIMIT_X) == 0){
+        digitalWrite(STEP_X,HIGH); 
+        delayMicroseconds(500); 
+        digitalWrite(STEP_X,LOW); 
+        delayMicroseconds(500); 
+      }
+      // Y step for ratio
+      while(ratio > 0 && (digitalRead(LIMIT_Y) == 0)){
+        ratio--;
+        digitalWrite(STEP_Y,HIGH); 
+        delayMicroseconds(500); 
+        digitalWrite(STEP_Y,LOW); 
+        delayMicroseconds(500);                 
+      }
+    }
+  }
 
 //  //Convert to polar
 //  float r = sqrt(pow(sumX, 2) + pow(sumY, 2));

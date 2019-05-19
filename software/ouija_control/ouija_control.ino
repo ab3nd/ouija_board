@@ -2,6 +2,8 @@
  * By Ab3nd.
  */
 
+#include <Servo.h>
+ 
 #define LIMIT_X 9
 #define LIMIT_Y 10
 
@@ -10,6 +12,8 @@
 #define DIR_Y 6
 #define STEP_X 2
 #define STEP_Y 3
+
+Servo mag_lift;
 
 void setup() {
   //Limit switches
@@ -24,10 +28,15 @@ void setup() {
   pinMode(STEP_Y, OUTPUT);
   
   //For debugging
-  Serial.begin(9200);
+  Serial.begin(9600);
 
   //Home the axes
   move_home();
+
+  //Set up the magnet height
+  mag_lift.attach(13);
+  //90 is very low, 40 looks about good
+  mag_lift.write(40);
 }
 
 void move_home(){
@@ -37,7 +46,7 @@ void move_home(){
   //Home x axis first
   digitalWrite(DIR_X, LOW);
   digitalWrite(STEP_X, LOW);
-  while(digitalRead(LIMIT_X) == 0) {
+  while(digitalRead(LIMIT_X) == 1) {
     digitalWrite(STEP_X,HIGH); 
     delayMicroseconds(500); 
     digitalWrite(STEP_X,LOW); 
@@ -45,9 +54,9 @@ void move_home(){
   }
 
   //Home Y axis, it uses opposite DIR_Y setting
-  digitalWrite(DIR_X, LOW);
+  digitalWrite(DIR_Y, HIGH);
   digitalWrite(STEP_Y, LOW);
-  while(digitalRead(LIMIT_Y) == 0){
+  while(digitalRead(LIMIT_Y) == 1){
     digitalWrite(STEP_Y,HIGH); 
     delayMicroseconds(500); 
     digitalWrite(STEP_Y,LOW); 
