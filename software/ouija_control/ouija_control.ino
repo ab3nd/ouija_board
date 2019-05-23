@@ -17,6 +17,35 @@
 #define Y_MAX 30921
 #define X_MAX 18995
 
+/* "NO"   600   5500
+ * "YES"  600   24600
+ * A      8800  29000      
+ * B      7200  26500      
+ * C      6500  24000
+ * D      5500  22000
+ * E      5200  20000
+ * F      5100  17500
+ * G      5000  15500
+ * H      5000  13500
+ * I      5000  11000 
+ * J      5500  9000
+ * K      6000  7000
+ * L      6800  4500
+ * M      8300  2300
+ * N      13200 28300
+ * O      11600 26400
+ * P      10600 24400
+ * Q      9600  22400
+ * R      8800  20200
+ * S      8600  17700
+ * T      8400  15700
+ * U      8100  13500
+ * V      8300  11000
+ * W      9000  8500
+ * X      10500 6100
+ * Y      11500 4000
+ * Z      12800 1800
+ */
 int current_x = 0;
 int current_y = 0;
 
@@ -129,7 +158,7 @@ void move_to(int x, int y) {
   }
 
   //Ratio of X to Y, so how many steps to take of each per cycle
-  int ratio = float(x) / float(y);
+  float ratio = float(abs(current_x - x)) / float(abs(current_y - y));
 
   int stepX, stepY;
   if(ratio >= 1){
@@ -139,7 +168,7 @@ void move_to(int x, int y) {
     stepX = 1;
     stepY = int(1.0/ratio);
   }
-  
+
   while((current_y != y) && (current_x != x)){
     //Do the x steps, if any
     for(int ii = 0; ii < stepX; ii++){
@@ -155,8 +184,15 @@ void move_to(int x, int y) {
       }
       single_step(y_dir, STEP_Y, 200);
     }
+  }  
+
+  while(current_y != y){
+    single_step(y_dir, STEP_Y, 200);
   }
 
+  while(current_x != x){
+    single_step(x_dir, STEP_X, 200);
+  }
 }
 
 void loop() {
@@ -197,8 +233,11 @@ void loop() {
         Serial.print("Move to ");
         Serial.print(x);
         Serial.print(",");
-        Serial.println(y);
-
+        Serial.print(y);
+        Serial.print(" from ");
+        Serial.print(current_x);
+        Serial.print(" ");
+        Serial.println(current_y);
         move_to(x, y);
     }
     
