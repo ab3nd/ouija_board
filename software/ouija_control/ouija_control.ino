@@ -18,36 +18,71 @@
 #define X_MAX 18995
 
 /* "NO"   600   5500
- * "YES"  600   24600
- * A      8800  29000      
- * B      7200  26500      
- * C      6500  24000
- * D      5500  22000
- * E      5200  20000
- * F      5100  17500
- * G      5000  15500
- * H      5000  13500
- * I      5000  11000 
- * J      5500  9000
- * K      6000  7000
- * L      6800  4500
- * M      8300  2300
- * N      13200 28300
- * O      11600 26400
- * P      10600 24400
- * Q      9600  22400
- * R      8800  20200
- * S      8600  17700
- * T      8400  15700
- * U      8100  13500
- * V      8300  11000
- * W      9000  8500
- * X      10500 6100
- * Y      11500 4000
- * Z      12800 1800
- */
+   "YES"  600   24600
+   A      8800  29000
+   B      7200  26500
+   C      6500  24000
+   D      5500  22000
+   E      5200  20000
+   F      5100  17500
+   G      5000  15500
+   H      5000  13500
+   I      5000  11000
+   J      5500  9000
+   K      6000  7000
+   L      6800  4500
+   M      8300  2300
+   N      13200 28300
+   O      11600 26400
+   P      10600 24400
+   Q      9600  22400
+   R      8800  20200
+   S      8600  17700
+   T      8400  15700
+   U      8100  13500
+   V      8300  11000
+   W      9000  8500
+   X      10500 6100
+   Y      11500 4000
+   Z      12800 1800
+*/
 int current_x = 0;
 int current_y = 0;
+
+struct point {
+  int x;
+  int y;
+};
+
+//26 letters, in order a-z
+struct point letters[26] = {
+  {8800, 29000},
+  {7200, 26500},
+  {6500, 24000},
+  {5500, 22000},
+  {5200, 20000},
+  {5100, 17500},
+  {5000, 15500},
+  {5000, 13500},
+  {5000, 11000},
+  {5500, 9000},
+  {6000, 7000},
+  {6800, 4500},
+  {8300, 2300},
+  {13200, 28300},
+  {11600, 26400},
+  {10600, 24400},
+  {9600, 22400},
+  {8800, 20200},
+  {8600, 17700},
+  {8400, 15700},
+  {8100, 13500},
+  {8300, 11000},
+  {9000, 8500},
+  {10500, 6100},
+  {11500, 4000},
+  {12800, 1800}
+};
 
 Servo mag_lift;
 
@@ -110,30 +145,30 @@ void move_home() {
 }
 
 void single_step(int dir, int axis, int vel) {
-  
+
   // Enable axis and maintain step counts
   digitalWrite(ENABLE, LOW);
-  if(axis == STEP_X){
+  if (axis == STEP_X) {
     digitalWrite(DIR_X, dir);
     //High is away from home for X
-    if(dir){
-      current_x++;  
+    if (dir) {
+      current_x++;
     }
-    else{
+    else {
       current_x--;
     }
   }
-  else{
+  else {
     digitalWrite(DIR_Y, dir);
     //HIGH is towards home for Y
-    if(dir){
-      current_y--;  
+    if (dir) {
+      current_y--;
     }
-    else{
+    else {
       current_y++;
     }
   }
-  
+
   // Single step
   digitalWrite(axis, HIGH);
   delayMicroseconds(vel);
@@ -141,7 +176,7 @@ void single_step(int dir, int axis, int vel) {
   delayMicroseconds(vel);
 }
 
-void move_to(int x, int y) {
+void move_to(int x, int y, int vel) {
   //In this house, we only move within the operating area of the gantry
   y = constrain(y, 0, Y_MAX);
   x = constrain(x, 0, X_MAX);
@@ -161,44 +196,71 @@ void move_to(int x, int y) {
   float ratio = float(abs(current_x - x)) / float(abs(current_y - y));
 
   int stepX, stepY;
-  if(ratio >= 1){
+  if (ratio >= 1) {
     stepX = int(ratio);
     stepY = 1;
-  }else{
+  } else {
     stepX = 1;
-    stepY = int(1.0/ratio);
+    stepY = int(1.0 / ratio);
   }
 
-  while((current_y != y) && (current_x != x)){
+  while ((current_y != y) && (current_x != x)) {
     //Do the x steps, if any
-    for(int ii = 0; ii < stepX; ii++){
-      if(current_x == x){
+    for (int ii = 0; ii < stepX; ii++) {
+      if (current_x == x) {
         break;
       }
-      single_step(x_dir, STEP_X, 200);
+      single_step(x_dir, STEP_X, vel);
     }
     //Do the y steps, if any
-    for(int ii = 0; ii < stepY; ii++){
-      if(current_y == y){
+    for (int ii = 0; ii < stepY; ii++) {
+      if (current_y == y) {
         break;
       }
-      single_step(y_dir, STEP_Y, 200);
+      single_step(y_dir, STEP_Y, vel);
     }
-  }  
-
-  while(current_y != y){
-    single_step(y_dir, STEP_Y, 200);
   }
 
-  while(current_x != x){
-    single_step(x_dir, STEP_X, 200);
+  while (current_y != y) {
+    single_step(y_dir, STEP_Y, vel);
+  }
+
+  while (current_x != x) {
+    single_step(x_dir, STEP_X, vel);
   }
 }
 
+void say_string(String msg) {
+  int index = 0;
+  struct point p;
+  //For all the letters
+  for (int ii = 0; ii < msg.length(); ii++) {
+    //String is all lowercase, so subtracting 'a' converts from ascii
+    //to a=0, b=1, c=2,..., which can then be used to
+    //look up coordinates in a lookup table and move
+    index = msg[ii] - 'a';
+    p = letters[index];
+    move_to(p.x, p.y, 100);
+    //Delay to let people read it off
+    delay(1000);
+    //If the next letter is the same as this letter
+    while ((ii != msg.length() - 1) && (msg[ii] == msg[ii + 1])) {
+      //Skip the next letter
+      ii++;
+      //move off this letter and then back on
+      move_to(current_x - 800, current_y - 800, 100);
+      move_to(current_x + 800, current_y + 800, 100);
+      delay(1000);
+    }
+  }
+}
+
+bool close_to(int a, int b, int thresh){
+  return b-thresh <= a <= b+thresh;  
+}
+
 void loop() {
-  // TODO: Lookup table of letter positions to step counts
-  // How to maintain step count? globals? Reset on home? <- can accumulate error
-  // Velocity curves/trapezoidal acceleration
+  // TODO: Velocity curves/trapezoidal acceleration
   // proportional speed based on distance, can treat X and Y seperately
   // Figure out top speed
 
@@ -207,47 +269,71 @@ void loop() {
   int index = 0;
   char *tok;
   long x, y;
-  
+
   if (Serial.available()) {
     serial_cmd = Serial.readStringUntil('\n');
     //Previous line would block until we got something, now parse it
-    if(serial_cmd.startsWith("s")){
-      
-        //Split on first space, command is of the form "s some string here"
-        index = serial_cmd.indexOf(" ");
-        String message = serial_cmd.substring(index+1);
-        
-        //Send it back as confirmation
-        Serial.println(message);
+    if (serial_cmd.startsWith("s")) {
+
+      //Split on first space, command is of the form "s some string here"
+      index = serial_cmd.indexOf(" ");
+      String message = serial_cmd.substring(index + 1);
+      //Send it back as confirmation
+      Serial.println(message);
+      say_string(message);
 
     }
-    else if(serial_cmd.startsWith("m")){
-      
-        //Split on spaces, command is of the form "m xx yy"
-        //second and third entries are x and y
-        index = serial_cmd.indexOf(" ");
-        x = serial_cmd.substring(index+1, serial_cmd.indexOf(" ", index+1)).toInt();
-        y = serial_cmd.substring(serial_cmd.indexOf(" ", index+1)).toInt();
+    else if (serial_cmd.startsWith("m")) {
 
-        //Send it back as confirmation
-        Serial.print("Move to ");
-        Serial.print(x);
-        Serial.print(",");
-        Serial.print(y);
-        Serial.print(" from ");
-        Serial.print(current_x);
-        Serial.print(" ");
-        Serial.println(current_y);
-        move_to(x, y);
+      //Split on spaces, command is of the form "m xx yy"
+      //second and third entries are x and y
+      index = serial_cmd.indexOf(" ");
+      x = serial_cmd.substring(index + 1, serial_cmd.indexOf(" ", index + 1)).toInt();
+      y = serial_cmd.substring(serial_cmd.indexOf(" ", index + 1)).toInt();
+
+      //Send it back as confirmation
+      Serial.print("Move to ");
+      Serial.print(x);
+      Serial.print(",");
+      Serial.print(y);
+      Serial.print(" from ");
+      Serial.print(current_x);
+      Serial.print(" ");
+      Serial.println(current_y);
+      move_to(x, y, 100);
     }
-    
-    else if(serial_cmd.startsWith("h")){
-        Serial.println("Moved home");
-        move_home();
+
+    else if (serial_cmd.startsWith("h")) {
+      Serial.println("Moved home");
+      move_home();
+    }
+
+    else if (serial_cmd.startsWith("y")) {
+      Serial.println("Move to Yes");
+      if ((current_y == 24600) && (current_x == 600)) {
+        //move off and then back on
+        move_to(current_x - 500, current_y - 800, 100);
+        move_to(current_x + 500, current_y + 800, 100);
+      }
+      else {
+        move_to(600, 24600, 100);
+      }
+    }
+
+    else if (serial_cmd.startsWith("n")) {
+      Serial.println("Move to No");
+      if ((current_y == 5500) && (current_x == 600)) {
+        //move off and then back on
+        move_to(current_x - 500, current_y - 800, 100);
+        move_to(current_x + 500, current_y + 800, 100);
+      }
+      else {
+        move_to(600, 5500, 100);
+      }
     }
     else {
-        Serial.print("What even is a ");
-        Serial.println(serial_cmd);
+      Serial.print("What even is a ");
+      Serial.println(serial_cmd);
     }
   }
 }

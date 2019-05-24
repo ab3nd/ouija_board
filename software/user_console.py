@@ -1,4 +1,5 @@
 import cmd
+import re
 import sys
 import serial
 
@@ -17,13 +18,27 @@ class OuijaShell(cmd.Cmd):
         
     def do_say(self, arg):
         'Spell out a phrase: say Some phrase here...'
-        self.serial_port.write(b"s {0}\n".format(arg))
+        #Cut the string down to all lowercase no punctuation
+        letters = re.sub("[^A-Za-z]*", "", arg).lower()
+        self.serial_port.write(b"s {0}\n".format(letters))
         line = self.serial_port.readline()
         print line
         
     def do_home(self, arg):
         'Home the control head: home'
         self.serial_port.write(b"h\n")
+        line = self.serial_port.readline()
+        print line
+
+    def do_yes(self, arg):
+        'Move to the "yes" message'
+        self.serial_port.write(b"y\n")
+        line = self.serial_port.readline()
+        print line
+
+    def do_no(self, arg):
+        'Move to the "no" message'
+        self.serial_port.write(b"n\n")
         line = self.serial_port.readline()
         print line
 
@@ -35,7 +50,7 @@ class OuijaShell(cmd.Cmd):
     def preloop(self):
         self.serial_port = serial.Serial()
         self.serial_port.baudrate = 9600
-        self.serial_port.port = '/dev/ttyUSB0'
+        self.serial_port.port = '/dev/ttyUSB1'
         self.serial_port.timeout = 30
         self.serial_port.open()
         if not self.serial_port.is_open:
