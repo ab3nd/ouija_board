@@ -109,7 +109,11 @@ Servo mag_lift;
 
 String serial_cmd;
 
+//The time in millis the system last moved
 unsigned long last_moved;
+
+//The last character the system sent
+char last_sent;
 
 void setup() {
 
@@ -368,7 +372,7 @@ char closest_letter() {
   }
   
   //Finally, check if the distance to "Yes" is closer
-  d = distance(no, current);
+  d = distance(yes, current);
   if (d < min_dist) {
     retval = 1;
     min_dist = d;
@@ -399,9 +403,9 @@ void follow_planchette() {
       max_idx = ii;
     }
   }
-
-  Serial.print("max_val: ");
-  Serial.println(max_val);
+//
+//  Serial.print("max_val: ");
+//  Serial.println(max_val);
   
   //If we need to get moving
   if (max_val > 10) {
@@ -565,50 +569,56 @@ void run_state_machine()
     case START:
       //Home the axes
       move_home();
-      Serial.println("start -> follow move");
       state = FOLLOW_MOVE;
       break;
     case FOLLOW_MOVE:
       follow_planchette();
       if ((millis() - last_moved) > 1500)
       {
-        Serial.println("follow move -> send char");
         state = SEND_CHAR;
       }
       break;
     case SEND_CHAR:
       //Get the closest character
       char toSend = closest_letter();
-      Serial.print("Send: ");
-      Serial.println((int)toSend);
-      
-      if (toSend == 1)
+      if (toSend == 1) //"Yes"
       {
         //If it is "yes", next state is Done Wait
-        Serial.println("send char -> done wait");
         state = DONE_WAIT;
-        Serial.println("Yes");
+        if(toSend != last_sent){
+          Serial.println("Yes");
+          last_sent = toSend;
+        }
       }
-      else if (toSend == 2)
+      else if (toSend == 2) // No character
       {
+        Serial.println("No character");
+        //Just update last sent character
+        last_sent = toSend;
         //It is a "No character", next state is FOLLOW_MOVE
-        Serial.println("send char -> follow move");
         state = FOLLOW_MOVE;
       }
-      else if (toSend >= 65 && toSend <= (65+26)) {
+      else if (toSend >= 65 && toSend <= (65+26)) //A letter 
+      {
+        //Dedupe characters, send the same thing exactly once
+        if(toSend != last_sent){
+          Serial.println(toSend);
+          last_sent = toSend;
+        }
         //If it is a letter, next state is Follow Move
-        Serial.println("send char -> follow move");
         state = FOLLOW_MOVE;
-        Serial.println(toSend);
       }
       else{
         //We don't handle "no" yet, other cases as well...
+        Serial.print("Character was: ");
+        Serial.println((int)toSend);
         state = FOLLOW_MOVE;
+        last_sent = toSend;
       }
       break;
     case DONE_WAIT:
       get_serial_cmd();
-      Serial.println("done wait -> follow move");
+      //Serial.println("done wait -> follow move");
       state = FOLLOW_MOVE;
       break;
   }
