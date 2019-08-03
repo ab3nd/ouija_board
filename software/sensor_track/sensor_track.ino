@@ -99,12 +99,14 @@ int readings[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 int cal_readings[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 /* Map counts on the address lines of the mux to indices for readings
- * so that the readings are sequential around the ring */
+   so that the readings are sequential around the ring */
 int addr_map[8] = {0, 1, 2, 7, 3, 6, 4, 5};
 
 Servo mag_lift;
 
 String serial_cmd;
+
+unsigned long last_moved;
 
 void setup() {
 
@@ -112,7 +114,7 @@ void setup() {
   mag_lift.attach(SERVO_PIN);
   //90 is very low, 40 looks about good
   mag_lift.write(40);
-  
+
   //Limit switches
   pinMode(LIMIT_X, INPUT);
   pinMode(LIMIT_Y, INPUT);
@@ -138,27 +140,27 @@ void setup() {
   digitalWrite(S2, LOW);
 
   //Accumulate 10 samples
-  for(int count = 0; count < 10; count++){
-    for(byte ii = 0; ii < 8; ii++)
+  for (int count = 0; count < 10; count++) {
+    for (byte ii = 0; ii < 8; ii++)
     {
       //Disable the switch
       digitalWrite(ENABLE_SENSE, HIGH);
       //Set the address bits
-      (ii & B00000001)? digitalWrite(S0, HIGH): digitalWrite(S0, LOW);
-      (ii & B00000010)? digitalWrite(S1, HIGH): digitalWrite(S1, LOW);
-      (ii & B00000100)? digitalWrite(S2, HIGH): digitalWrite(S2, LOW);
+      (ii & B00000001) ? digitalWrite(S0, HIGH) : digitalWrite(S0, LOW);
+      (ii & B00000010) ? digitalWrite(S1, HIGH) : digitalWrite(S1, LOW);
+      (ii & B00000100) ? digitalWrite(S2, HIGH) : digitalWrite(S2, LOW);
       digitalWrite(ENABLE_SENSE, LOW);
       cal_readings[addr_map[ii]] += analogRead(SENSE);
     }
   }
 
   //Get their average
-  for(int idx = 0; idx < 8; idx++)
+  for (int idx = 0; idx < 8; idx++)
   {
     //Each reading should be around 512 with no magnet, so these
-    //should all be around 5120, and so not have an underflow 
+    //should all be around 5120, and so not have an underflow
     //dividing by 10
-    cal_readings[idx] = cal_readings[idx]/10;
+    cal_readings[idx] = cal_readings[idx] / 10;
   }
 
   //For debugging
@@ -166,6 +168,9 @@ void setup() {
 
   //Home the axes
   move_home();
+
+  //Just for initialization
+  last_moved = millis();
 }
 
 
@@ -312,49 +317,72 @@ void say_string(String msg) {
 }
 
 void update_sensor() {
-  for(byte ii = 0; ii < 8; ii++)
+  for (byte ii = 0; ii < 8; ii++)
   {
     //Disable the switch
     digitalWrite(ENABLE_SENSE, HIGH);
     //Set the address bits
-    (ii & B00000001)? digitalWrite(S0, HIGH): digitalWrite(S0, LOW);
-    (ii & B00000010)? digitalWrite(S1, HIGH): digitalWrite(S1, LOW);
-    (ii & B00000100)? digitalWrite(S2, HIGH): digitalWrite(S2, LOW);
+    (ii & B00000001) ? digitalWrite(S0, HIGH) : digitalWrite(S0, LOW);
+    (ii & B00000010) ? digitalWrite(S1, HIGH) : digitalWrite(S1, LOW);
+    (ii & B00000100) ? digitalWrite(S2, HIGH) : digitalWrite(S2, LOW);
     digitalWrite(ENABLE_SENSE, LOW);
-    readings[addr_map[ii]] = analogRead(SENSE)-cal_readings[addr_map[ii]];
+    readings[addr_map[ii]] = analogRead(SENSE) - cal_readings[addr_map[ii]];
   }
 }
 
-bool close_to(int a, int b, int thresh){
-  return b-thresh <= a <= b+thresh;  
+bool close_to(int a, int b, int thresh) {
+  return b - thresh <= a <= b + thresh;
+}
+
+float distance(point p1, point p2) {
+  return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));  
+}
+
+char closest_letter() {
+  //Hacky, but the biggest distance between two points on the 
+  //board can't be more than the sum of the edges of the board
+  unsigned long min_dist = X_MAX + Y_MAX;
+  int min_idx = 0;
+  point current = {current_x, current_y};
+  for(int ii = 0; ii < 25; ii++){
+    float d = distance(current, letters[ii]);
+    if(d < min_dist)
+    {
+      min_idx = ii;
+      min_dist = d;
+    }
+  }
+  //Capital A is 65;
+  return (char)(min_idx + 65);
 }
 
 void loop() {
   update_sensor();
-  
+
   //Get the maximum sensor reading
   byte max_idx = 0;
   int max_val = 0;
-  for(byte ii = 0; ii < 8; ii++)
+  for (byte ii = 0; ii < 8; ii++)
   {
-    if(readings[ii]> max_val)
+    if (readings[ii] > max_val)
     {
       max_val = readings[ii];
       max_idx = ii;
     }
   }
 
-  if(max_val > 6){
-    
+  //If we need to get moving
+  if (max_val > 6) {
+
     //Get the second max
     byte second_max_idx = 0;
     byte second_max = 0;
-    
-    if(max_idx == 0)
+
+    if (max_idx == 0)
     {
-      if(readings[max_idx+1] > readings[7])
+      if (readings[max_idx + 1] > readings[7])
       {
-        second_max_idx = max_idx+1;
+        second_max_idx = max_idx + 1;
       }
       else
       {
@@ -363,84 +391,87 @@ void loop() {
     }
     else if (max_idx == 7)
     {
-      if(readings[0] > readings[max_idx-1])
+      if (readings[0] > readings[max_idx - 1])
       {
         second_max_idx = 0;
       }
       else
       {
-        second_max_idx = max_idx-1;
-      }    
+        second_max_idx = max_idx - 1;
+      }
     }
     else
     {
-      if(readings[max_idx+1] > readings[max_idx-1])
+      if (readings[max_idx + 1] > readings[max_idx - 1])
       {
-        second_max_idx = max_idx+1;
+        second_max_idx = max_idx + 1;
       }
       else
       {
-        second_max_idx = max_idx-1;
+        second_max_idx = max_idx - 1;
       }
     }
-    
-    Serial.print(max_idx);
-    Serial.print(" (");
-    Serial.print(max_val);
-    Serial.print("), ");
-    Serial.println(second_max_idx);
 
-    int move_amt = 10;
+    int vel = 100;
+    int move_dist = 200;
 
     int target_x = current_x;
     int target_y = current_y;
-    
+
     //Add a little bit to current postion to get new position
     if ((max_idx == 0 && second_max_idx == 1) || (max_idx == 1 && second_max_idx == 0))
     {
-      //Down and left
-      target_x += move_amt;
-      target_y += move_amt;
+      //Down and Left
+      target_x += move_dist;
+      target_y += move_dist;
     }
     else if ((max_idx == 1 && second_max_idx == 2) || (max_idx == 2 && second_max_idx == 1))
     {
       //Left
-      target_y += move_amt;
+      target_y += move_dist;
     }
     else if ((max_idx == 2 && second_max_idx == 3) || (max_idx == 3 && second_max_idx == 2))
     {
-      //Up and left
-      target_x -= move_amt;
-      target_y += move_amt;
+      //Up and Left
+      target_x -= move_dist;
+      target_y += move_dist;
     }
     else if ((max_idx == 3 && second_max_idx == 4) || (max_idx == 4 && second_max_idx == 3))
     {
       //Up
-      target_x -= move_amt;
+      target_x -= move_dist;
     }
     else if ((max_idx == 4 && second_max_idx == 5) || (max_idx == 5 && second_max_idx == 4))
     {
-      //Up and right
-      target_x -= move_amt;
-      target_y -= move_amt;
+      //Up and Right
+      target_x -= move_dist;
+      target_y -= move_dist;
     }
     else if ((max_idx == 5 && second_max_idx == 6) || (max_idx == 6 && second_max_idx == 5))
     {
       //Right
-      target_y -= move_amt;
+      target_y -= move_dist;
     }
     else if ((max_idx == 6 && second_max_idx == 7) || (max_idx == 7 && second_max_idx == 6))
     {
-      //Down and right
-      target_x += move_amt;
-      target_y -= move_amt;
+      //Down and Right
+      target_x += move_dist;
+      target_y -= move_dist;
     }
     else if ((max_idx == 7 && second_max_idx == 0) || (max_idx == 0 && second_max_idx == 7))
     {
-      //Down
-      target_x += move_amt;
+      target_x += move_dist;
     }
 
-   
-  }  
+    move_to(target_x, target_y, vel);
+    last_moved = millis();
+  }
+  else
+  {
+    //Move isn't needed, check timing and print the letter
+    if((millis() - last_moved) > 2000)
+    {
+      Serial.println(closest_letter());
+    }
+  }
 }
