@@ -95,6 +95,9 @@ struct point letters[26] = {
   {12800, 1800}
 };
 
+point no = {600, 5500};
+point yes = {600, 24600};
+
 int readings[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 int cal_readings[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -166,9 +169,6 @@ void setup() {
   //For debugging
   Serial.begin(9600);
 
-  //Home the axes
-  move_home();
-
   //Just for initialization
   last_moved = millis();
 }
@@ -235,6 +235,9 @@ void single_step(int dir, int axis, int vel) {
   delayMicroseconds(vel);
   digitalWrite(axis, LOW);
   delayMicroseconds(vel);
+
+  //Update last move
+  last_moved = millis();
 }
 
 void move_to(int x, int y, int vel) {
@@ -335,29 +338,55 @@ bool close_to(int a, int b, int thresh) {
 }
 
 float distance(point p1, point p2) {
-  return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));  
+  return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
 
 char closest_letter() {
-  //Hacky, but the biggest distance between two points on the 
+  //Hacky, but the biggest distance between two points on the
   //board can't be more than the sum of the edges of the board
   unsigned long min_dist = X_MAX + Y_MAX;
   int min_idx = 0;
+  float d = 0;
   point current = {current_x, current_y};
-  for(int ii = 0; ii < 25; ii++){
-    float d = distance(current, letters[ii]);
-    if(d < min_dist)
+  for (int ii = 0; ii < 25; ii++) {
+    d = distance(current, letters[ii]);
+    if (d < min_dist)
     {
       min_idx = ii;
       min_dist = d;
     }
   }
+
   //Capital A is 65;
-  return (char)(min_idx + 65);
+  char retval = (char)(min_idx + 65);
+
+  //Check if the distance to "No" is even closer
+  d = distance(no, current);
+  if (d < min_dist) {
+    retval = 0;
+    min_dist = d;
+  }
+  
+  //Finally, check if the distance to "Yes" is closer
+  d = distance(no, current);
+  if (d < min_dist) {
+    retval = 1;
+    min_dist = d;
+  }
+
+  //Too far from any letter to count
+  if(min_dist > 2000)
+  {
+    retval = 2;
+  }
+
+  //Return is a char, but it's 0 for No, 1 for Yes, 2 for no letter, and the letter for A-Z
+  return retval;
 }
 
-void loop() {
-  update_sensor();
+void follow_planchette() {
+  int vel = 100;
+  int move_dist = 200;
 
   //Get the maximum sensor reading
   byte max_idx = 0;
@@ -371,50 +400,32 @@ void loop() {
     }
   }
 
+  Serial.print("max_val: ");
+  Serial.println(max_val);
+  
   //If we need to get moving
-  if (max_val > 6) {
-
+  if (max_val > 10) {
     //Get the second max
     byte second_max_idx = 0;
     byte second_max = 0;
 
     if (max_idx == 0)
     {
-      if (readings[max_idx + 1] > readings[7])
-      {
-        second_max_idx = max_idx + 1;
-      }
-      else
-      {
-        second_max_idx = 7;
-      }
+      //Handle wrap at zero
+      (readings[max_idx + 1] > readings[7]) ? second_max_idx = max_idx + 1 : second_max_idx = 7;
     }
     else if (max_idx == 7)
     {
-      if (readings[0] > readings[max_idx - 1])
-      {
-        second_max_idx = 0;
-      }
-      else
-      {
-        second_max_idx = max_idx - 1;
-      }
+      //Handle wrap at 7
+      (readings[0] > readings[max_idx - 1]) ? second_max_idx = 0 : second_max_idx = max_idx - 1;
     }
     else
     {
-      if (readings[max_idx + 1] > readings[max_idx - 1])
-      {
-        second_max_idx = max_idx + 1;
-      }
-      else
-      {
-        second_max_idx = max_idx - 1;
-      }
+      //Check sensors next to this sensor
+      (readings[max_idx + 1] > readings[max_idx - 1]) ? second_max_idx = max_idx + 1 : second_max_idx = max_idx - 1;
     }
 
-    int vel = 100;
-    int move_dist = 200;
-
+    //Figure out the move
     int target_x = current_x;
     int target_y = current_y;
 
@@ -460,18 +471,145 @@ void loop() {
     }
     else if ((max_idx == 7 && second_max_idx == 0) || (max_idx == 0 && second_max_idx == 7))
     {
+      //Down
       target_x += move_dist;
     }
 
     move_to(target_x, target_y, vel);
-    last_moved = millis();
   }
-  else
-  {
-    //Move isn't needed, check timing and print the letter
-    if((millis() - last_moved) > 2000)
-    {
-      Serial.println(closest_letter());
+}
+
+void move_yes() 
+{
+  if ((current_y == 24600) && (current_x == 600)) {
+    //move off and then back on
+    move_to(current_x - 500, current_y - 800, 100);
+    move_to(current_x + 500, current_y + 800, 100);
+  }
+  else {
+    move_to(600, 24600, 100);
+  }  
+}
+
+void move_no()
+{
+  if ((current_y == 5500) && (current_x == 600)) {
+    //move off and then back on
+    move_to(current_x - 500, current_y - 800, 100);
+    move_to(current_x + 500, current_y + 800, 100);
+  }
+  else {
+    move_to(600, 5500, 100);
+  }  
+}
+
+void get_serial_cmd() {
+
+  while (!Serial.available()) {} // wait for data to arrive
+
+  int index = 0;
+  char *tok;
+  long x, y;
+
+  if (Serial.available()) {
+    serial_cmd = Serial.readStringUntil('\n');
+    //Previous line would block until we got something
+    //The returning command from the user is a string to say,
+    //And then a yes/no answer string
+    if (serial_cmd.startsWith("s")) {
+
+      //Split on first space, command is of the form "s some string here"
+      index = serial_cmd.indexOf(" ");
+      String message = serial_cmd.substring(index + 1);
+      //Send it back as confirmation
+      say_string(message);
+
     }
+    else if (serial_cmd.startsWith("a")) {
+
+      //Answer, message is of the form "a yyny" or similar 
+      index = serial_cmd.indexOf(" ");
+      String answer = serial_cmd.substring(index + 1);
+      for(int ii = 0; ii < answer.length(); ii++)
+      {
+        if(answer.charAt(ii) == "y")
+        {
+          move_yes();
+        }
+        else if(answer.charAt(ii) == "n")
+        {
+          move_no();
+        }
+      }
+    }
+
+    else {
+      Serial.print("What even is a ");
+      Serial.println(serial_cmd);
+    }
+  }
+}
+
+enum states {START, FOLLOW_MOVE, SEND_CHAR, DONE_WAIT, SHOW_RESULT};
+uint8_t state = START;
+
+void loop() {
+  update_sensor();
+  run_state_machine();
+}
+
+void run_state_machine()
+{
+  switch (state)
+  {
+    case START:
+      //Home the axes
+      move_home();
+      Serial.println("start -> follow move");
+      state = FOLLOW_MOVE;
+      break;
+    case FOLLOW_MOVE:
+      follow_planchette();
+      if ((millis() - last_moved) > 1500)
+      {
+        Serial.println("follow move -> send char");
+        state = SEND_CHAR;
+      }
+      break;
+    case SEND_CHAR:
+      //Get the closest character
+      char toSend = closest_letter();
+      Serial.print("Send: ");
+      Serial.println((int)toSend);
+      
+      if (toSend == 1)
+      {
+        //If it is "yes", next state is Done Wait
+        Serial.println("send char -> done wait");
+        state = DONE_WAIT;
+        Serial.println("Yes");
+      }
+      else if (toSend == 2)
+      {
+        //It is a "No character", next state is FOLLOW_MOVE
+        Serial.println("send char -> follow move");
+        state = FOLLOW_MOVE;
+      }
+      else if (toSend >= 65 && toSend <= (65+26)) {
+        //If it is a letter, next state is Follow Move
+        Serial.println("send char -> follow move");
+        state = FOLLOW_MOVE;
+        Serial.println(toSend);
+      }
+      else{
+        //We don't handle "no" yet, other cases as well...
+        state = FOLLOW_MOVE;
+      }
+      break;
+    case DONE_WAIT:
+      get_serial_cmd();
+      Serial.println("done wait -> follow move");
+      state = FOLLOW_MOVE;
+      break;
   }
 }
