@@ -391,7 +391,7 @@ char closest_letter() {
 
 void follow_planchette() {
   int vel = 100;
-  int move_thresh = 8;
+  int move_thresh = 10;
 
   //Get the maximum sensor reading
   byte max_idx = 0;
@@ -428,7 +428,7 @@ void follow_planchette() {
     }
 
     //Figure out the move
-    int move_dist = 10 * max_val; //was 200
+    int move_dist = 15 * max_val; //was 200
     int target_x = current_x;
     int target_y = current_y;
 
@@ -534,11 +534,11 @@ void get_serial_cmd() {
       String answer = serial_cmd.substring(index + 1);
       for(int ii = 0; ii < answer.length(); ii++)
       {
-        if(answer.charAt(ii) == "y")
+        if(answer.charAt(ii) == 'y')
         {
           move_yes();
         }
-        else if(answer.charAt(ii) == "n")
+        else if(answer.charAt(ii) == 'n')
         {
           move_no();
         }
