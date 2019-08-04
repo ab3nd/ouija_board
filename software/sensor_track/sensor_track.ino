@@ -116,6 +116,9 @@ unsigned long last_moved;
 //The last character the system sent
 char last_sent;
 
+bool sent_answer;
+bool sent_msg;
+
 void setup() {
 
   //Set up the magnet height
@@ -506,7 +509,7 @@ void move_no()
   }  
 }
 
-void get_serial_cmd() {
+bool get_serial_cmd() {
   Serial.println("get_serial_cmd called");
   
   while (!Serial.available()) {} // wait for data to arrive
@@ -526,7 +529,7 @@ void get_serial_cmd() {
       //Send it back as confirmation
       say_string(message);
 
-      Serial.println("Say a message");
+      sent_msg = true;
     }
     else if (serial_cmd.startsWith("a")) {
       //Answer, message is of the form "a yyny" or similar 
@@ -543,9 +546,11 @@ void get_serial_cmd() {
           move_no();
         }
       }
-
-      Serial.println("Say the answer");
+      sent_answer = true;
     }
+
+    //only return true if both are true
+    return sent_answer && sent_msg;
   }
 }
 
@@ -562,10 +567,15 @@ void run_state_machine()
   switch (state)
   {
     case DONE_WAIT:
-      Serial.println("Entered done_wait");
-      get_serial_cmd();
-      Serial.println("Got command");
-      state = FOLLOW_MOVE;
+      //Only returns true if both the answer and the message have both been sent
+      //otherwise, we stay in this state
+      if(get_serial_cmd())
+      {
+        //Reset what was sent
+        sent_answer = false;
+        sent_msg = false;
+        state = FOLLOW_MOVE;
+      }
       break;
     case START:
       //Home the axes
