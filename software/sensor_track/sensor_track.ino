@@ -108,6 +108,7 @@ int addr_map[8] = {0, 1, 2, 7, 3, 6, 4, 5};
 Servo mag_lift;
 
 String serial_cmd;
+String guess;
 
 //The time in millis the system last moved
 unsigned long last_moved;
@@ -390,7 +391,7 @@ char closest_letter() {
 
 void follow_planchette() {
   int vel = 100;
-  int move_dist = 200;
+  int move_thresh = 8;
 
   //Get the maximum sensor reading
   byte max_idx = 0;
@@ -403,12 +404,9 @@ void follow_planchette() {
       max_idx = ii;
     }
   }
-//
-//  Serial.print("max_val: ");
-//  Serial.println(max_val);
-  
+
   //If we need to get moving
-  if (max_val > 10) {
+  if (max_val > move_thresh) {
     //Get the second max
     byte second_max_idx = 0;
     byte second_max = 0;
@@ -430,6 +428,7 @@ void follow_planchette() {
     }
 
     //Figure out the move
+    int move_dist = 10 * max_val; //was 200
     int target_x = current_x;
     int target_y = current_y;
 
@@ -508,13 +507,12 @@ void move_no()
 }
 
 void get_serial_cmd() {
-
+  Serial.println("get_serial_cmd called");
+  
   while (!Serial.available()) {} // wait for data to arrive
 
   int index = 0;
-  char *tok;
-  long x, y;
-
+  
   if (Serial.available()) {
     serial_cmd = Serial.readStringUntil('\n');
     //Previous line would block until we got something
@@ -528,9 +526,9 @@ void get_serial_cmd() {
       //Send it back as confirmation
       say_string(message);
 
+      Serial.println("Say a message");
     }
     else if (serial_cmd.startsWith("a")) {
-
       //Answer, message is of the form "a yyny" or similar 
       index = serial_cmd.indexOf(" ");
       String answer = serial_cmd.substring(index + 1);
@@ -545,16 +543,13 @@ void get_serial_cmd() {
           move_no();
         }
       }
-    }
 
-    else {
-      Serial.print("What even is a ");
-      Serial.println(serial_cmd);
+      Serial.println("Say the answer");
     }
   }
 }
 
-enum states {START, FOLLOW_MOVE, SEND_CHAR, DONE_WAIT, SHOW_RESULT};
+enum states {START, FOLLOW_MOVE, SEND_CHAR, DONE_WAIT};
 uint8_t state = START;
 
 void loop() {
@@ -566,10 +561,17 @@ void run_state_machine()
 {
   switch (state)
   {
+    case DONE_WAIT:
+      Serial.println("Entered done_wait");
+      get_serial_cmd();
+      Serial.println("Got command");
+      state = FOLLOW_MOVE;
+      break;
     case START:
       //Home the axes
       move_home();
       state = FOLLOW_MOVE;
+      guess = "";
       break;
     case FOLLOW_MOVE:
       follow_planchette();
@@ -583,43 +585,34 @@ void run_state_machine()
       char toSend = closest_letter();
       if (toSend == 1) //"Yes"
       {
-        //If it is "yes", next state is Done Wait
+        //If it is "yes", send the accumulated string
+        Serial.println(guess);
+        guess = "";
         state = DONE_WAIT;
-        if(toSend != last_sent){
-          Serial.println("Yes");
-          last_sent = toSend;
-        }
       }
       else if (toSend == 2) // No character
       {
-        Serial.println("No character");
         //Just update last sent character
         last_sent = toSend;
-        //It is a "No character", next state is FOLLOW_MOVE
+        //Keep accumulating letters
         state = FOLLOW_MOVE;
       }
       else if (toSend >= 65 && toSend <= (65+26)) //A letter 
       {
-        //Dedupe characters, send the same thing exactly once
+        //Dedupe characters, add it to the string exactly once
         if(toSend != last_sent){
-          Serial.println(toSend);
+          guess.concat(toSend);
           last_sent = toSend;
         }
-        //If it is a letter, next state is Follow Move
+        //Keep accumulating letters
         state = FOLLOW_MOVE;
       }
-      else{
+      else
+      {
         //We don't handle "no" yet, other cases as well...
-        Serial.print("Character was: ");
-        Serial.println((int)toSend);
         state = FOLLOW_MOVE;
         last_sent = toSend;
       }
-      break;
-    case DONE_WAIT:
-      get_serial_cmd();
-      //Serial.println("done wait -> follow move");
-      state = FOLLOW_MOVE;
       break;
   }
 }
