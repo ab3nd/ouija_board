@@ -240,16 +240,16 @@ void say_string(String msg) {
     //look up coordinates in a lookup table and move
     index = msg[ii] - 'a';
     p = letters[index];
-    move_to(p.x, p.y, 100);
+    move_to(p.x, p.y, 50);
     //Delay to let people read it off
-    delay(1000);
+    delay(700);
     //If the next letter is the same as this letter
     while ((ii != msg.length() - 1) && (msg[ii] == msg[ii + 1])) {
       //Skip the next letter
       ii++;
       //move off this letter and then back on
-      move_to(current_x - 800, current_y - 800, 100);
-      move_to(current_x + 800, current_y + 800, 100);
+      move_to(current_x - 800, current_y - 800, 50);
+      move_to(current_x + 800, current_y + 800, 50);
       delay(1000);
     }
   }
@@ -304,32 +304,33 @@ void loop() {
     }
 
     else if (serial_cmd.startsWith("h")) {
-      Serial.println("Moved home");
       move_home();
+      Serial.println("Moved home");
     }
 
     else if (serial_cmd.startsWith("y")) {
-      Serial.println("Move to Yes");
       if ((current_y == 24600) && (current_x == 600)) {
         //move off and then back on
-        move_to(current_x - 500, current_y - 800, 100);
-        move_to(current_x + 500, current_y + 800, 100);
+        move_to(current_x + 800, current_y - 800, 100);
+        move_to(current_x - 800, current_y + 800, 100);
       }
       else {
         move_to(600, 24600, 100);
       }
+      Serial.println("Move to Yes");
+      
     }
 
     else if (serial_cmd.startsWith("n")) {
-      Serial.println("Move to No");
       if ((current_y == 5500) && (current_x == 600)) {
         //move off and then back on
-        move_to(current_x - 500, current_y - 800, 100);
-        move_to(current_x + 500, current_y + 800, 100);
+        move_to(current_x + 800, current_y - 800, 100);
+        move_to(current_x - 800, current_y + 800, 100);
       }
       else {
         move_to(600, 5500, 100);
       }
+      Serial.println("Move to No");
     }
     else {
       Serial.print("What even is a ");
