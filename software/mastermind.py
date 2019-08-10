@@ -31,10 +31,14 @@ def check_word(target, guess):
 
 	return answer
 
-# a = "boy"
-# b = "kob"
-# print a
-# print b
-# print check_word(a,b)
+if __name__ == "__main__":
+	import sys
+	if len(sys.argv) >= 3
+		a = sys.argv[1]
+		b = sys.argv[2]
+
+		print a
+		print b
+		print check_word(a,b)
 
 
