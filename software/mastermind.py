@@ -33,12 +33,14 @@ def check_word(target, guess):
 
 if __name__ == "__main__":
 	import sys
-	if len(sys.argv) >= 3
-		a = sys.argv[1]
-		b = sys.argv[2]
+	if len(sys.argv) >= 3:
+		target = sys.argv[1]
+		guess = sys.argv[2]
 
-		print a
-		print b
-		print check_word(a,b)
+		print "Guessed: {0}".format(guess)
+		print "Answer:  {0}".format(target)
+		print check_word(target, guess)
+	else:
+		print "{0} takes two arguments".format(sys.argv[0])
 
 
