@@ -11,7 +11,7 @@ def check_word(target, guess):
 	# Get all the letters that are correct and in the correct place
 	for idx, p in enumerate(pairs):
 		if p[0] == p[1]:
-			answer.append("y")
+			answer.append("n") # Using no for "right and in the right spot"("y")
 		else:
 			keep_list.append(p)
 
@@ -24,7 +24,7 @@ def check_word(target, guess):
 	for g_letter in guess_remain:
 		for idx, t_letter in enumerate(target_remain):
 			if g_letter == t_letter:
-				answer.append('n')
+				answer.append("y") # Using yes for "right letter, wrong spot" ('n')
 				# Ok to delete stuff out of a list because we're not continuing to operate on it
 				target_remain.pop(idx)
 				break
