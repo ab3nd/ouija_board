@@ -42,6 +42,11 @@ class OuijaShell(cmd.Cmd):
         line = self.serial_port.readline()
         print line
 
+    def do_intro(self, arg):
+        self.serial_port.write(b"s {0}\n".format("saysevenletterword"))
+        line = self.serial_port.readline()
+        print line
+
     def do_no(self, arg):
         'Move to the "no" message'
         self.serial_port.write(b"n\n")
