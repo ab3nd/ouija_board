@@ -25,9 +25,15 @@ The Arduino was controlled over a serial-over-USB link from a Raspberry Pi runni
 
 The Python for the UI and Mastermind solving is in user_console.py and mastermind.py. The control code for the Arduino is in ouija_control.ino. They communicate using a pretty simple text-based protocol. The incomplete code for following the planchette is in sensor_track.ino. It results in some very jerky movement, and it would probably be better to do some form of vector representation of the magnet displacement and a PID loop to drive that to zero when the magnet is well-centered, as well as velocity control to have it operate smoothly, but that's Left As An Exercise For The Reader. 
 
-### Potentially Useful Things to Know
+### Hardware Notes
 
-Aluminum is soft. If you want to cut it, it will smear like butter into hacksaws and abrasive wheels. The tool to use is just normal wood cutting implements, like miter saws and whatnot. 
+The sensors we used are AH49ENTR Hall effect sensors, SOT23-3 case size. We didn't do a lot of work to characterize sensors or anything, these are just what Ross happened to have on hand. He also had the 74hc4051 8ch analog demux that was used to communicate with the sensors. The sensor ring had 8 sensors, and the mux/demux has 8 channels, addressed with three address lines, so the total pin count going into the Arduino just fit what we had available after handling the stepper controllers, limit switches, and the servo to raise/lower the magnet. Of course, none of this got used in the final version except the limit switches. 
+
+The limit switches allow the system to drive the planchette dragging magnet to a corner, and then count steps when moving the planchette to know where it is on the board. There are only one set of limit switches, the other end of each axis' travel is handled in software, by knowing how many steps it is to the other side of the board, and not taking steps that would move the head beyond that limit. 
+
+The sense ring PCB design is in the sense_pcb folder in this repo. It was designed in Kicad, so between that, Python, etc. pretty much the whole thing except the servo control modules and the board they are on is open source. If you get the PCBs made, OSHPark will do a slightly more expensive job of it, while DirtyPCBs will do it cheaper and far slower. I've used both, they're both good. 
+
+The CNC gantries that moved the magnet under the board were cut down from their orignal size. Aluminum is soft. If you want to cut it, it will smear like butter into hacksaws and abrasive wheels. The tool to use is just normal wood cutting implements, like miter saws and whatnot. 
 
 Raspbian is pretty rough around the edges, I rant about it with a lot of swearing here:
 
@@ -84,14 +90,6 @@ https://www.aliexpress.com/item/DIY-XY-Plotter-drawbot-pen-drawing-robot-machine
 https://www.aliexpress.com/item/50-X-65cm-Laser-Engraving-Machine-Wood-Router-CNC-DIY-Laser-Engraver-Machine-For-Desktop-Cutting/32970303676.html?spm=2114.search0204.3.96.5e8f46b0ur8a8C&ws_ab_test=searchweb0_0,searchweb201602_6_10065_10130_10068_10890_10547_319_10546_317_10548_10545_10696_453_10084_454_10083_10618_10307_537_536_10902_10059_10884_10887_321_322_10103,searchweb201603_16,ppcSwitch_0&algo_expid=b95455ae-6d0d-4979-8a5e-edf8464dbc0f-14&algo_pvid=b95455ae-6d0d-4979-8a5e-edf8464dbc0f
 
 Second one is huge, could be cut down to fit under board. Very tall, though. 
-
-### Hardware Notes
-
-AH49ENTR Hall effect sensors, SOT23-3 case
-
-74hc4051 8ch analog demux
-
-3 enable, 3 address = 24 hall effect sensors
 
 ### Magnet Grip
 
