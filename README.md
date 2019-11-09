@@ -30,7 +30,9 @@ The Python for the UI and Mastermind solving is in user_console.py and mastermin
 Aluminum is soft. If you want to cut it, it will smear like butter into hacksaws and abrasive wheels. The tool to use is just normal wood cutting implements, like miter saws and whatnot. 
 
 Raspbian is pretty rough around the edges, I rant about it with a lot of swearing here:
+
 http://gizmosmith.com/2019/08/28/raspbian-still-bad/
+
 http://gizmosmith.com/2019/08/11/the-year-of-linux-on-the-desktop-is-ha-get-fucked/
 
 
